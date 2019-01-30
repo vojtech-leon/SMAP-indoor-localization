@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android=
+                      "http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content" android:background="#4864ff"
+android:layout_marginBottom="10dp">
+
+    <TextView
+            android:text="@string/hint_ssid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/textViewSSID"
+            style="@style/text_view_style"/>
+    <TextView
+            android:text="@string/hint_bssid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/textViewBSSID"
+            style="@style/text_view_style"/>
+    <TextView
+            android:text="@string/hint_signal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/textViewSignal"
+            style="@style/text_view_style"/>
+    <TextView
+            android:text="@string/hint_timestamp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/textViewTimestamp"
+            style="@style/text_view_style"/>
+    <TextView
+            android:text="@string/position_x"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/textViewX"
+            style="@style/text_view_style"/>
+    <TextView
+            android:text="@string/position_y"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/textViewY"
+            style="@style/text_view_style"/>
+</LinearLayout>

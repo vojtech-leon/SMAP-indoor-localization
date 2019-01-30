@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Indoor Position Test</string>
+    <string name="hint_ssid">SSID…</string>
+    <string name="hint_bssid">BSSID…</string>
+    <string name="hint_signal">Signál…</string>
+    <string name="hint_timestamp">Čas…</string>
+    <string name="button_save">Uložit</string>
+    <string name="error_empty">Vyplňte prosím souřadnice.</string>
+    <string name="loading">Načítám…</string>
+    <string name="position_x">Pozice X…</string>
+    <string name="position_y">Pozice Y…</string>
+    <string name="time_in_s">Čas v s...</string>
+    <string name="title_activity_settings">Nastavení</string>
+    <string name="combination">Kombinace</string>
+    <string name="fingerprints">Otisky</string>
+    <string name="lateration">Laterace</string>
+    <string name="wifi">WiFi</string>
+    <string name="ble">BLE</string>
+    <string name="algorithm">Algoritmus</string>
+    <string name="settings">Nastavení</string>
+    <string name="scanlist">Seznam otisků</string>
+    <string name="back">Zpět</string>
+
+
+</resources>
