@@ -33,7 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> startActivity(new Intent(this, MainActivity.class)));
 
         sharedPreferences = getSharedPreferences(C.SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-        isWifiScanningEnabled = sharedPreferences.getBoolean(C.WIFI_SCANNING, true);
+        isWifiScanningEnabled = sharedPreferences.getBoolean(C.WIFI_SCANNING, false);
         isBLEScanningEnabled = sharedPreferences.getBoolean(C.BLE_SCANNING, false);
 
         wifiScanning = findViewById(R.id.switchWifi);
@@ -56,7 +56,6 @@ public class SettingsActivity extends AppCompatActivity {
         radioGroup = findViewById(R.id.radioGroup);
         radioGroup.check(sharedPreferences.getInt(C.ALG, R.id.rbComb));
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            System.out.println(checkedId);
             editor = sharedPreferences.edit();
             editor.putInt(C.ALG, checkedId);
             editor.apply();

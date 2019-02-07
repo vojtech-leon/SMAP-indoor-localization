@@ -1,36 +1,18 @@
 package cz.uhk.vojtele1.indoorpositiontest.model;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
-
-@Entity
 public class WifiScan {
-    @PrimaryKey(autoGenerate = true)
-    public int id;
-    @ColumnInfo(name = "ssid")
     private String ssid;
-    @ColumnInfo(name = "bssid")
-    private String bssid;
-    @ColumnInfo(name = "rssi")
+    private String mac;
     private int rssi;
-    @ColumnInfo(name = "timestamp")
-    private long timestamp;
-    @ColumnInfo(name = "x")
-    private double x;
-    @ColumnInfo(name = "y")
-    private double y;
+    private long time;
 
     @Override
     public String toString() {
-        return "WifiScan{" +
-                "id=" + id +
-                ", ssid='" + ssid + '\'' +
-                ", bssid='" + bssid + '\'' +
+        return "{" +
+                "ssid='" + ssid + '\'' +
+                ", mac='" + mac + '\'' +
                 ", rssi=" + rssi +
-                ", timestamp=" + timestamp +
-                ", x=" + x +
-                ", y=" + y +
+                ", time=" + time +
                 '}';
     }
 
@@ -42,12 +24,12 @@ public class WifiScan {
         this.ssid = ssid;
     }
 
-    public String getBssid() {
-        return bssid;
+    public String getMac() {
+        return mac;
     }
 
-    public void setBssid(String bssid) {
-        this.bssid = bssid;
+    public void setMac(String mac) {
+        this.mac = mac;
     }
 
     public int getRssi() {
@@ -58,36 +40,18 @@ public class WifiScan {
         this.rssi = rssi;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public long getTime() {
+        return time;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public void setTime(long time) {
+        this.time = time;
     }
 
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public WifiScan(String ssid, String bssid, int rssi, long timestamp, double x, double y) {
+    public WifiScan(String ssid, String mac, int rssi, long time) {
         this.ssid = ssid;
-        this.bssid = bssid;
+        this.mac = mac;
         this.rssi = rssi;
-        this.timestamp = timestamp;
-        this.x = x;
-        this.y = y;
+        this.time = time;
     }
 }

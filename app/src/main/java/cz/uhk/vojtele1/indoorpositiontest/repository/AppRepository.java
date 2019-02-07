@@ -3,71 +3,67 @@ package cz.uhk.vojtele1.indoorpositiontest.repository;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
-import cz.uhk.vojtele1.indoorpositiontest.dao.BleScanDao;
-import cz.uhk.vojtele1.indoorpositiontest.dao.WifiScanDao;
+import cz.uhk.vojtele1.indoorpositiontest.dao.ScanDao;
 import cz.uhk.vojtele1.indoorpositiontest.database.AppDatabase;
-import cz.uhk.vojtele1.indoorpositiontest.model.BleScan;
-import cz.uhk.vojtele1.indoorpositiontest.model.WifiScan;
+import cz.uhk.vojtele1.indoorpositiontest.model.Scan;
 
 import java.util.List;
 
 public class AppRepository {
 
-    private WifiScanDao wifiScanDao;
-    private BleScanDao bleScanDao;
-    private LiveData<List<WifiScan>> wifiScans;
-    private LiveData<List<BleScan>> bleScans;
+    private ScanDao scanDao;
+    private LiveData<List<Scan>> scansLive;
+    private static LiveData<List<Scan>> scans;
 
     public AppRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
-        wifiScanDao = db.wifiScanDao();
-        bleScanDao = db.bleScanDao();
-        wifiScans = wifiScanDao.getAll();
-        bleScans = bleScanDao.getAll();
+        scanDao = db.scanDao();
+        scansLive = scanDao.getAllLiveOwn();
+        scans = scanDao.getAllLive();
     }
 
-    public LiveData<List<WifiScan>> getAllWifiScan() {
-        return wifiScans;
+    public LiveData<List<Scan>> getAllOwnScansLive() {
+        return scansLive;
     }
 
-    public LiveData<List<BleScan>> getAllBleScan() {
-        return bleScans;
+    public LiveData<List<Scan>> getAllScan() {
+        return scans;
     }
 
-    public void insertWifiScan(WifiScan wifiScan) {
-        new insertAsyncTaskWifiScan(wifiScanDao).execute(wifiScan);
+    public void insertScan(Scan scan) {
+        new insertAsyncTaskScan(scanDao).execute(scan);
     }
 
-    public void insertBleScan(BleScan bleScan) {
-        new insertAsyncTaskBleScan(bleScanDao).execute(bleScan);
+    public void deleteAllOwnScans() {
+        new deleteAsyncTaskScans(scanDao).execute();
     }
 
-    private static class insertAsyncTaskWifiScan extends AsyncTask<WifiScan, Void, Void> {
+    private static class insertAsyncTaskScan extends AsyncTask<Scan, Void, Void> {
 
-        private WifiScanDao wifiScanDao;
+        private ScanDao scanDao;
 
-        insertAsyncTaskWifiScan(WifiScanDao dao) {
-            wifiScanDao = dao;
+        insertAsyncTaskScan(ScanDao dao) {
+            scanDao = dao;
         }
 
         @Override
-        protected Void doInBackground(final WifiScan... params) {
-            wifiScanDao.insert(params[0]);
+        protected Void doInBackground(final Scan... params) {
+            scanDao.insert(params[0]);
             return null;
         }
     }
 
-    private static class insertAsyncTaskBleScan extends AsyncTask<BleScan, Void, Void> {
+    private static class deleteAsyncTaskScans extends AsyncTask<Void, Void, Void> {
 
-        private BleScanDao bleScanDao;
+        private final ScanDao scanDao;
 
-        insertAsyncTaskBleScan(BleScanDao dao) {
-            bleScanDao = dao;
+        deleteAsyncTaskScans(ScanDao dao) {
+            scanDao = dao;
         }
 
         @Override
-        protected Void doInBackground(final BleScan... params) {
-            bleScanDao.insert(params[0]);
+        protected Void doInBackground(final Void... voids) {
+            scanDao.deleteAllOwn();
             return null;
         }
     }

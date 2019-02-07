@@ -3,6 +3,8 @@ package cz.uhk.vojtele1.indoorpositiontest.utils;
 import android.bluetooth.BluetoothAdapter;
 import android.net.wifi.WifiManager;
 
+import java.util.*;
+
 public class Utils {
 
     /**
@@ -29,5 +31,21 @@ public class Utils {
             } else
                 return wasWifiEnabled || wm.setWifiEnabled(false);
         }
+    }
+
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> unsortMap) {
+
+        List<Map.Entry<K, V>> list =
+                new LinkedList<>(unsortMap.entrySet());
+
+        Collections.sort(list, (o1, o2) -> (o1.getValue()).compareTo(o2.getValue()));
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
+
     }
 }

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5a8f9366d350245673216edc67154b7d",
+    "identityHash": "ae10b4c5813adf8a5d10955e31710d29",
     "entities": [
       {
-        "tableName": "WifiScan",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ssid` TEXT, `bssid` TEXT, `rssi` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `x` REAL NOT NULL, `y` REAL NOT NULL)",
+        "tableName": "Scan",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `wifiscans` TEXT, `blescans` TEXT, `x` INTEGER NOT NULL, `y` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `own` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -15,20 +15,26 @@
             "notNull": true
           },
           {
-            "fieldPath": "ssid",
-            "columnName": "ssid",
+            "fieldPath": "wifiScans",
+            "columnName": "wifiscans",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "bssid",
-            "columnName": "bssid",
+            "fieldPath": "bleScans",
+            "columnName": "blescans",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "rssi",
-            "columnName": "rssi",
+            "fieldPath": "x",
+            "columnName": "x",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "y",
+            "columnName": "y",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -39,65 +45,9 @@
             "notNull": true
           },
           {
-            "fieldPath": "x",
-            "columnName": "x",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "y",
-            "columnName": "y",
-            "affinity": "REAL",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": true
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "BleScan",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `address` TEXT, `rssi` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `x` REAL NOT NULL, `y` REAL NOT NULL)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
+            "fieldPath": "own",
+            "columnName": "own",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "address",
-            "columnName": "address",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "rssi",
-            "columnName": "rssi",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "timestamp",
-            "columnName": "timestamp",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "x",
-            "columnName": "x",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "y",
-            "columnName": "y",
-            "affinity": "REAL",
             "notNull": true
           }
         ],
@@ -113,7 +63,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5a8f9366d350245673216edc67154b7d\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"ae10b4c5813adf8a5d10955e31710d29\")"
     ]
   }
 }

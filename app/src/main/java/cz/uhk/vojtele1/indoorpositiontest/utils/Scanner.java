@@ -1,6 +1,7 @@
 package cz.uhk.vojtele1.indoorpositiontest.utils;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.le.ScanRecord;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,9 +31,6 @@ public class Scanner {
      */
     private boolean running;
 
-    private double x, y;
-
-
     private WifiManager wm;
     private BluetoothAdapter bluetoothAdapter;
     private BroadcastReceiver wifiBroadcastReceiver;
@@ -40,7 +38,7 @@ public class Scanner {
     private Handler handler;
     private BluetoothAdapter.LeScanCallback leScanCallback;
 
-    private boolean isWifiBRRegistered, isBleBRRegistered, isBleRunning;
+    private boolean isWifiBRRegistered, isBleBRRegistered;
 
     public Scanner(Context context) {
         this.context = context;
@@ -57,30 +55,35 @@ public class Scanner {
         wifiBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                System.out.println("Ziskal jsem wifiScany v case: " + (SystemClock.uptimeMillis() - startTime));
+                //System.out.println("Ziskal jsem wifiScany v case: " + (SystemClock.uptimeMillis() - startTime));
                 wifiScans.addAll(convertWifiResults(wm.getScanResults()));
             }
         };
         leScanCallback = (device, rssi, scanRecord) -> {
-            bluetoothAdapter.stopLeScan(leScanCallback);
-            isBleRunning = false;
-            bleScans.add(new BleScan(device.getAddress(), rssi, SystemClock.uptimeMillis() - startTime, x, y));
+            // System.out.println("Ziskal jsem ble rssi: " + rssi + " v case: " + (SystemClock.uptimeMillis() - startTime));
+            bleScans.add(new BleScan(device.getAddress(), rssi, SystemClock.uptimeMillis() - startTime));
         };
     }
 
     private List<WifiScan> convertWifiResults(List<ScanResult> scanResults) {
         List<WifiScan> wifiScans = new ArrayList<>();
         for (ScanResult scan : scanResults) {
-            WifiScan wifiScan = new WifiScan(scan.SSID, scan.BSSID, scan.level, SystemClock.uptimeMillis() - startTime, x, y);
+            WifiScan wifiScan = new WifiScan(scan.SSID, scan.BSSID, scan.level, SystemClock.uptimeMillis() - startTime);
             wifiScans.add(wifiScan);
         }
         return wifiScans;
     }
 
-    public boolean startScan(int time, boolean wifi, boolean ble, final ScanResultListener scanResultListener, double x, double y) {
+    /**
+     *
+     * @param time is s
+     * @param wifi
+     * @param ble
+     * @param scanResultListener
+     * @return
+     */
+    public boolean startScan(int time, boolean wifi, boolean ble, final ScanResultListener scanResultListener) {
         ble = ble && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE); //vyradime ble pokud ho zarizeni nema.
-        this.x = x;
-        this.y = y;
         if (time == 0) time = 10;
         if (running) {
             return false; //pokud jeste nedobehlo probihajici skenovani (nebo problemy pri zapinani HW), NEstartuj nove a vrat false
@@ -89,6 +92,7 @@ public class Scanner {
 
 
         wifiScans.clear();
+        bleScans.clear();
 
         startTime = SystemClock.uptimeMillis(); //zaznamenej cas zacatku skenovani
         if (wifi) {
@@ -100,7 +104,6 @@ public class Scanner {
         if (ble) {
             isBleBRRegistered = true;
             bluetoothAdapter.startLeScan(leScanCallback);
-            isBleRunning = true;
         }
         //casovac ukonceni skenovani
         timer = new Timer();
@@ -126,10 +129,7 @@ public class Scanner {
                     wm.startScan();
                 }
                 if (finalBle) {
-                    if (!isBleRunning) {
-                        isBleRunning = true;
-                        bluetoothAdapter.startLeScan(leScanCallback);
-                    }
+                    bluetoothAdapter.startLeScan(leScanCallback);
                 }
                 if (running) {
                     handler.postDelayed(this, delay);
@@ -139,7 +139,7 @@ public class Scanner {
         return true;
     }
 
-    private void stopScan() {
+    public void stopScan() {
         if (!running) {
             return;
         }

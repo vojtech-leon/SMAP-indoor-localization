@@ -5,21 +5,27 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import cz.uhk.vojtele1.indoorpositiontest.dao.BleScanDao;
-import cz.uhk.vojtele1.indoorpositiontest.dao.WifiScanDao;
-import cz.uhk.vojtele1.indoorpositiontest.model.BleScan;
-import cz.uhk.vojtele1.indoorpositiontest.model.WifiScan;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import cz.uhk.vojtele1.indoorpositiontest.dao.ScanDao;
+import cz.uhk.vojtele1.indoorpositiontest.model.Scan;
 
-@Database(entities = {WifiScan.class, BleScan.class}, version = 2)
+import java.io.*;
+import java.util.List;
+
+@Database(entities = {Scan.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract WifiScanDao wifiScanDao();
-    public abstract BleScanDao bleScanDao();
+    public abstract ScanDao scanDao();
 
     private static AppDatabase INSTANCE;
 
-    public static AppDatabase getDatabase(final Context context) {
+    private static Context context;
+
+    public static AppDatabase getDatabase(final Context cont) {
+        context = cont;
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
@@ -30,8 +36,9 @@ public abstract class AppDatabase extends RoomDatabase {
                             // Migration is not part of this practical.
                             .fallbackToDestructiveMigration()
 
-                            // doplní defaultní data napsaná dole / vymaže db
+                            // vymaže vše v db
                              //  .addCallback(roomDatabaseCallback)
+                            .addCallback(populateDatabaseCallback)
                             .build();
                 }
             }
@@ -45,25 +52,56 @@ public abstract class AppDatabase extends RoomDatabase {
                 @Override
                 public void onOpen(@NonNull SupportSQLiteDatabase db) {
                     super.onOpen(db);
-                    new PopulateDbAsync(INSTANCE).execute();
+                    new ClearDb(INSTANCE).execute();
                 }
             };
 
-    /**
-     * Populate the database in the background.
-     */
-    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
+    private static RoomDatabase.Callback populateDatabaseCallback =
+            new RoomDatabase.Callback() {
 
-        private final WifiScanDao wifiScanDao;
+                @Override
+                public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                    super.onOpen(db);
+                    new PopulateDb(INSTANCE).execute();
+                }
+            };
 
-        PopulateDbAsync(AppDatabase db) {
-            wifiScanDao = db.wifiScanDao();
+    private static class ClearDb extends AsyncTask<Void, Void, Void> {
+
+        private final ScanDao scanDao;
+
+        ClearDb(AppDatabase db) {
+            scanDao = db.scanDao();
         }
 
         @Override
         protected Void doInBackground(final Void... params) {
-            wifiScanDao.deleteAll();
-            //wifiScanDao.insertWifiScan(new WifiScan("prvni", "mac", -50, 10000, 0, 0));
+            scanDao.deleteAll();
+            return null;
+        }
+    }
+
+    private static class PopulateDb extends AsyncTask<Void, Void, Void> {
+
+        private final ScanDao scanDao;
+
+        PopulateDb(AppDatabase db) {
+            scanDao = db.scanDao();
+        }
+
+        @Override
+        protected Void doInBackground(final Void... params) {
+            if (scanDao.getSize() == 0) {
+                System.out.println("prazdna db, plnim daty");
+                Gson gson = new Gson();
+                AssetManager assetManager = context.getApplicationContext().getAssets();
+                try {
+                    Reader reader = new InputStreamReader(assetManager.open("populateDB.txt"));
+                    scanDao.insertAll(gson.fromJson(reader, new TypeToken<List<Scan>>(){}.getType()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             return null;
         }
     }

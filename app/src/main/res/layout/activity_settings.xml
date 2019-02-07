@@ -59,13 +59,13 @@
             android:layout_marginBottom="113dp" app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/radioGroup">
         <RadioButton
-                android:text="@string/lateration"
+                android:text="@string/wifi"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/rbLateration" android:layout_weight="1"/>
+                android:layout_height="wrap_content" android:id="@+id/rbWifi" android:layout_weight="1"/>
         <RadioButton
-                android:text="@string/fingerprints"
+                android:text="@string/ble"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/rbNN" android:layout_weight="1"/>
+                android:layout_height="wrap_content" android:id="@+id/rbBle" android:layout_weight="1"/>
         <RadioButton
                 android:text="@string/combination"
                 android:layout_width="wrap_content"
